@@ -6,7 +6,6 @@ import SerialArduino
 from ultralytics import YOLO
 
 # Load a model
-model = YOLO('yolov8n.pt')  # load an official model
 model = YOLO('best.pt')  # load a custom model
 
 # Predict with the model
@@ -120,6 +119,7 @@ while cap.isOpened():
             print(data)
             cv2.imwrite("image.jpg", image)
             results = model('image.jpg')
+
 
         if (pt[1] == 540 and buah % 3 == 0):
             if cid:

@@ -3,7 +3,7 @@ import math
 import xgboost as xgb
 import pandas as pd
 from segmentation import segment
-import SerialArduino
+from SerialArduino import*
 
 model = xgb.Booster()
 model.load_model("xgboost_model2.model")
@@ -122,7 +122,7 @@ while cap.isOpened():
             data = [pt[2], pt[3], pt[4], pt[5]]
             print(data)
             cv2.imwrite("image.jpg", image)
-
+            sendSerial(pt[5])
 
         if (pt[1] == 540 and buah % 3 == 0):
             if cid:
