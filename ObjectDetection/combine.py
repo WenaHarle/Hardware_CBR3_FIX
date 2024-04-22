@@ -130,7 +130,7 @@ while cap.isOpened():
 
 
     midold = midnow.copy()
-
+    cv2.imshow("segment", result)
     cv2.imshow("Result", frame)
     cv2.imshow("Result2", frame2)
 

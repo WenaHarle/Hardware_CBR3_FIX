@@ -1,7 +1,7 @@
 import serial
 
 def sendSerial(SerialData):
-    COM_PORT = 'COM3'  # Change this to match your Arduino's COM port
+    COM_PORT = '/dev/ttyACM0'  # Change this to match your Arduino's COM port
     BAUD_RATE = 9600
 
 # Initialize serial communication
