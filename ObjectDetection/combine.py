@@ -3,20 +3,17 @@ import math
 import xgboost as xgb
 import pandas as pd
 from segmentation import segment
+from SerialArduino import*
 
 model = xgb.Booster()
 model.load_model("xgboost_model2.model")
-fps = 5
-
 
 # Baca video
-video_top = 'output1.mp4'
+video_top = 'Camera_B_21.mp4'
 cap = cv2.VideoCapture(video_top)
-cap.set(cv2.CAP_PROP_FPS, fps)
 
-video_side = 'output2.mp4'
+video_side = 'Camera_A_21.mp4'
 cap2 = cv2.VideoCapture(video_side)
-cap2.set(cv2.CAP_PROP_FPS, fps)
 
 count = 0
 midold = []
@@ -31,7 +28,6 @@ while cap.isOpened():
     ret, frame = cap.read()
     _, frame2 = cap2.read()
     frame2 = frame2[200:800, 600:1200]
-    #frame2 = frame2[220:860, 640:1280]
     if not ret:
         break
     # Ubah ruang warna BGR ke HSVC
@@ -56,8 +52,8 @@ while cap.isOpened():
         area2 = cv2.contourArea(cnt2)
         if area2 > 15000:
             x2, y2, w2, h2 = cv2.boundingRect(cnt2)
-            #cv2.rectangle(frame2, (x2, y2), (x2 + w2, y2 + h2), (0, 0, 225), 3)
-            #cv2.putText(frame2, str(h2), (x2, y2 + h2), cv2.FONT_HERSHEY_PLAIN, 5, (0, 255, 0), 5)
+            cv2.rectangle(frame2, (x2, y2), (x2 + w2, y2 + h2), (0, 0, 225), 3)
+            cv2.putText(frame2, str(h2), (x2, y2 + h2), cv2.FONT_HERSHEY_PLAIN, 5, (0, 255, 0), 5)
             t = h2
 
     for cnt in contours:
@@ -78,7 +74,7 @@ while cap.isOpened():
             if prediction == 2.0:
                 grade = 'C'
 
-            cv2.putText(frame, str(grade), (x-40, y + h-40), cv2.FONT_HERSHEY_PLAIN, 10, (0, 255, 0), 10)
+            cv2.putText(frame, str(grade), (x, y + h), cv2.FONT_HERSHEY_PLAIN, 10, (0, 255, 0), 10)
 
             midnow.append((cx, cy, w, h, t, grade))
 
@@ -125,8 +121,8 @@ while cap.isOpened():
             image = frame[pt[1]-320:pt[1]+320, pt[0]-320:pt[0]+320]
             data = [pt[2], pt[3], pt[4], pt[5]]
             print(data)
-            cv2.imwrite("imagetop.jpg", image)
-            cv2.imwrite("imageside.jpg", frame2)
+            cv2.imwrite("image.jpg", image)
+            sendSerial(pt[5])
 
         if (pt[1] == 540 and buah % 3 == 0):
             if cid:
@@ -135,8 +131,7 @@ while cap.isOpened():
 
     midold = midnow.copy()
     cv2.imshow("segment", result)
-    cv2.imshow("segment2", result2)
-    #cv2.imshow("Result", frame)
+    cv2.imshow("Result", frame)
     cv2.imshow("Result2", frame2)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):

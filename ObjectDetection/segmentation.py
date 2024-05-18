@@ -5,8 +5,8 @@ def segment(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # Definisikan rentang warna hijau
-    lower_green = np.array([0, 0, 90])
-    upper_green = np.array([255, 20, 255])
+    lower_green = np.array([40, 40, 40])
+    upper_green = np.array([80, 255, 255])
     #lower_green = np.array([30, 40, 40])
     #upper_green = np.array([100, 255, 255])
 

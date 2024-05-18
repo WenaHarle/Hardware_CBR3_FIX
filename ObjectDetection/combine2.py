@@ -1,19 +1,22 @@
 import cv2
 import math
+import pandas as pd
 from segmentation import segment
+import SerialArduino
 from ultralytics import YOLO
 
 # Load a model
 model = YOLO('best.pt')  # load a custom model
 
-# Baca video
-video_top = 'output1.mp4'
-cap = cv2.VideoCapture(video_top)
-cap.set(cv2.CAP_PROP_FPS, 15)
+# Predict with the model
+results = model('https://ultralytics.com/images/bus.jpg')  # predict on an image
 
-video_side = 'output2.mp4'
+# Baca video
+video_top = 'Camera_B_21.mp4'
+cap = cv2.VideoCapture(video_top)
+
+video_side = 'Camera_A_21.mp4'
 cap2 = cv2.VideoCapture(video_side)
-cap2.set(cv2.CAP_PROP_FPS, 15)
 
 count = 0
 midold = []
@@ -52,8 +55,8 @@ while cap.isOpened():
         area2 = cv2.contourArea(cnt2)
         if area2 > 15000:
             x2, y2, w2, h2 = cv2.boundingRect(cnt2)
-            #cv2.rectangle(frame2, (x2, y2), (x2 + w2, y2 + h2), (0, 0, 225), 3)
-            #cv2.putText(frame2, str(h2), (x2, y2 + h2), cv2.FONT_HERSHEY_PLAIN, 5, (0, 255, 0), 5)
+            cv2.rectangle(frame2, (x2, y2), (x2 + w2, y2 + h2), (0, 0, 225), 3)
+            cv2.putText(frame2, str(h2), (x2, y2 + h2), cv2.FONT_HERSHEY_PLAIN, 5, (0, 255, 0), 5)
             t = h2
 
     for cnt in contours:
@@ -67,7 +70,7 @@ while cap.isOpened():
             cy = int((y + y + h) / 2)
 
 
-            cv2.putText(frame, str('grade'), (20, 20), cv2.FONT_HERSHEY_PLAIN, 10, (0, 255, 0), 10)
+            cv2.putText(frame, (x, y + h), cv2.FONT_HERSHEY_PLAIN, 10, (0, 255, 0), 10)
 
             midnow.append((cx, cy, w, h, t))
 
@@ -112,10 +115,10 @@ while cap.isOpened():
             buah =+1
             cid.append(object_id)
             image = frame[pt[1]-320:pt[1]+320, pt[0]-320:pt[0]+320]
-            cv2.imwrite("image2Top.jpg", image)
-            cv2.imwrite("image2Side.jpg", image)
-            results = model('image2Top.jpg')
-            results = model('image2Side.jpg')
+            data = [pt[2], pt[3], pt[4]]
+            print(data)
+            cv2.imwrite("image.jpg", image)
+            results = model('image.jpg')
 
 
         if (pt[1] == 540 and buah % 3 == 0):
